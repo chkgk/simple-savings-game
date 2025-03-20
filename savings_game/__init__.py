@@ -35,13 +35,14 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
     inflation_regime = models.StringField()
-    food_purchase = models.IntegerField(label="How much food do you want to buy?")
-    risky_investment = models.IntegerField(label="How much do you want to invest in the asset?")
+    food_purchase = models.IntegerField(label="How many units of food do you want to buy?")
+    risky_investment = models.IntegerField(label="How much cash do you want to invest in the asset?")
     
     cash = models.CurrencyField()
     food = models.IntegerField()
     
     salary = models.CurrencyField(default=0)
+    food_expense = models.CurrencyField(default=0)
     interest_payment = models.CurrencyField(default=0)
     asset_payment = models.CurrencyField(default=0)
     
@@ -49,7 +50,7 @@ class Player(BasePlayer):
 
 def creating_session(subsession):
     for p in subsession.get_players():
-        p.inflation_regime = 'low'
+        p.inflation_regime = subsession.session.config['inflation_regime']
         if p.round_number == 1:
             p.cash = C.INITIAL_CASH
             p.food = C.INITIAL_FOOD
@@ -89,6 +90,7 @@ class Savings(Page):
         food_expense = player.food_purchase * get_food_price(player)
         asset_expense = player.risky_investment
         unspent_cash = current_cash - food_expense - asset_expense
+        player.food_expense = food_expense
         
         # here we need to check if the player is bankrupt (but also check if they can still purchase at least one unit of food / have one unit of food left)
         
@@ -127,16 +129,19 @@ class Results(Page):
         total_interest_payments = 0
         total_asset_payments = 0
         total_salaries = 0
+        total_food_expense = 0
         
         for p in player.in_all_rounds():
             total_interest_payments += p.interest_payment
             total_asset_payments += p.asset_payment
             total_salaries += p.salary
+            total_food_expense += p.food_expense
             
         return {
             'total_interest_payments': total_interest_payments,
             'total_asset_payments': total_asset_payments,
             'total_salaries': total_salaries,
+            'total_food_expense': total_food_expense,
             'leftover_food': player.food,
             'final_cash': player.cash
         }

@@ -2,9 +2,18 @@ from os import environ
 
 SESSION_CONFIGS = [
     dict(
-        name='savings_game',
+        display_name='Savings game, 12 months, low inflation',
+        name='savings_game_low',
         app_sequence=['savings_game'],
         num_demo_participants=2,
+        inflation_regime='low'
+    ),
+    dict(
+        display_name='Savings game, 12 months, high inflation',
+        name='savings_game_high',
+        app_sequence=['savings_game'],
+        num_demo_participants=2,
+        inflation_regime='high'
     ),
 ]
 
