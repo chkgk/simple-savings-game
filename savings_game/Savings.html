@@ -1,0 +1,130 @@
+{{ block title }}
+    Month {{ player.round_number }} of {{ max_rounds }}
+{{ endblock }}
+
+{{ block content }}
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-4">
+                <h4>Portfolio</h4>
+                Cash: <span id="cash">{{ cash }}</span><br>
+                Food: <span id="food">{{ food }}</span>
+            </div>
+            <div class="col-4">
+                <h4>History</h4>
+                Salary income: <span id="salary">{{ salary }}</span><br>
+                Interest payment: <span id="interest">{{ player.interest_payment }} </span><br>
+                Asset payment: <span id="return">{{ player.asset_payment }}</span>
+            </div>
+            <div class="col-4">
+                <h4>Information</h4>
+                Food price: <span id="food_price">{{ food_price }}</span><br>
+                Savings account interest rate: <span id="interest_rate">{{ interest_rate }}%</span><br>
+                Asset expected return: <span id="asset_return">{{ asset_expected_return }}%</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <h3 class="card-header">
+        Decision
+    </h3>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-8">
+                {{ formfield 'food_purchase' }}
+                {{ formfield 'risky_investment' }}
+            </div>
+            <div class="col-4">
+                <h4>Expenses</h4>
+                Food expense: <span id="food_expense"></span><br>
+                Asset investment: <span id="asset_expense"></span><br>
+                <p><b>Total expenses: <span id="total_expense"></span></b></p>
+                {{ next_button }}
+            </div>
+        </div>
+        <span id="error_message"></span>
+    </div>
+</div>
+
+{{ endblock }}
+
+{{ block scripts }}
+<script>
+    // inputs
+    const food_input = document.getElementById('id_food_purchase');
+    const asset_input = document.getElementById('id_risky_investment')
+    const otree_next = document.getElementsByClassName('otree-btn-next')[0];
+    
+    // outputs
+    const cash_span = document.getElementById('cash');
+    const food_span = document.getElementById('food');
+    const salary_span = document.getElementById('salary');
+    const interest_span = document.getElementById('interest');
+    const return_span = document.getElementById('return');
+    const food_price_span = document.getElementById('food_price');
+    const interest_rate_span = document.getElementById('interest_rate');
+    const asset_return_span = document.getElementById('asset_return');
+    
+    const food_expense_span = document.getElementById('food_expense');
+    const asset_expense_span = document.getElementById('asset_expense');
+    const total_expense_span = document.getElementById('total_expense');
+    
+    const error_message_span = document.getElementById('error_message');
+    
+    // globals
+    let food_expense = 0;
+    let asset_expense = 0;
+    let total_expense = 0;
+    
+    // event listeners
+    food_input.addEventListener('change', update_expenses);
+    asset_input.addEventListener('change', update_expenses);
+    
+    function set_initial_values() {
+        otree_next.innerHTML = "Confirm";
+    }
+    
+    function check_balances() {
+        let disable = false;
+        let error_message = "";
+        
+        // do we have enough cash?
+        if (total_expense > js_vars.cash) {
+            disable = true;    
+            error_message = "Not enough cash."
+        }
+        
+        // do we have at least one food after the purchase?
+        let food_input_value = parseInt(food_input.value) || 0;
+        if (food_input_value + js_vars.food < 1) {
+            disable = true;
+            error_message = "You need to have at least 1 unit of food."
+        }
+        
+        if (disable) {
+            otree_next.setAttribute('disabled', true);
+        } else {
+            otree_next.removeAttribute('disabled', false);
+        }
+        error_message_span.innerHTML = error_message;
+    }
+    
+    function update_expenses() {
+        let food_input_value = parseInt(food_input.value) || 0;
+        let asset_expense_value = parseInt(asset_input.value) || 0;
+        
+        food_expense = food_input_value * js_vars.food_price;
+        asset_expense = asset_expense_value;
+        total_expense = food_expense + asset_expense;
+        food_expense_span.innerHTML = "$" + food_expense;
+        asset_expense_span.innerHTML = "$" + asset_expense;
+        total_expense_span.innerHTML = "$" + total_expense;
+        
+        check_balances();
+    }
+    
+    set_initial_values();
+</script>
+{{ endblock scripts }}
