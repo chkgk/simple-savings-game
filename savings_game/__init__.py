@@ -11,7 +11,7 @@ class C(BaseConstants):
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 12 + 1  # last one is not actually played, we just need it for calculations
     
-    INITIAL_CASH = 400
+    INITIAL_CASH = 10
     INITIAL_FOOD = 0
     INITIAL_SALARY = 4.00
     INITIAL_FOOD_PRICE = 4.20
@@ -19,7 +19,7 @@ class C(BaseConstants):
     # note, these are all monthly
     SAVINGS_INTEREST_RATE = 0.019
     ASSET_EXPECTED_RETURN = 0.06
-    ASSET_STANDARD_DEVIATION = 0.02
+    ASSET_STANDARD_DEVIATION = 0.04
     INFLATION_RATE = {
         'low': 0.05,
         'high': 0.10
@@ -37,6 +37,8 @@ class Player(BasePlayer):
     inflation_regime = models.StringField()
     food_purchase = models.IntegerField(label="How many units of food do you want to buy?")
     risky_investment = models.IntegerField(label="How much cash do you want to invest in the asset?")
+    
+    died = models.BooleanField(default=False)
     
     cash = models.CurrencyField()
     food = models.IntegerField()
@@ -83,16 +85,21 @@ class Savings(Page):
     form_fields = ['food_purchase', 'risky_investment']
     
     def is_displayed(player):
-        return player.round_number < C.NUM_ROUNDS  # do not play the last round, just use if for calculations
+        # do not play the last round, just use if for calculations
+        # make sure to skip if player is dead
+        return player.round_number < C.NUM_ROUNDS and not player.participant.vars.get('dead', False) 
     
     def before_next_page(player, timeout_happened):
         current_cash = player.cash
-        food_expense = player.food_purchase * get_food_price(player)
+        food_price = get_food_price(player)
+        food_expense = player.food_purchase * food_price
         asset_expense = player.risky_investment
         unspent_cash = current_cash - food_expense - asset_expense
         player.food_expense = food_expense
         
-        # here we need to check if the player is bankrupt (but also check if they can still purchase at least one unit of food / have one unit of food left)
+        # calculate new food
+        new_food = player.food - 1 + player.food_purchase
+        
         
         # calculate new cash
         interest_payment = cu(unspent_cash * C.SAVINGS_INTEREST_RATE)
@@ -100,8 +107,22 @@ class Savings(Page):
         salary = cu(C.INITIAL_SALARY)
         new_cash = unspent_cash + salary + interest_payment + asset_payment
         
-        # calculate new food
-        new_food = player.food - 1 + player.food_purchase
+        # new food price
+        new_food_price = food_price * (1 + C.INFLATION_RATE[player.inflation_regime])
+        
+        if new_food < 0:
+            # player died
+            player.died = True
+            player.participant.vars['dead'] = True
+            player.participant.vars['death_reason'] = "negative food"
+            player.participant.vars['death_round'] = player.round_number
+            
+        
+        if new_food == 0 and new_cash < new_food_price:
+            player.died = True
+            player.participant.vars['dead'] = True
+            player.participant.vars['death_reason'] = "not enough cash for future consumption"
+            player.participant.vars['death_round'] = player.round_number
         
         # write variables for next round
         next_player = player.in_round(player.round_number + 1)
@@ -130,6 +151,12 @@ class Results(Page):
         total_asset_payments = 0
         total_salaries = 0
         total_food_expense = 0
+
+        leftover_food = 0
+        final_cash = 0
+        if not player.participant.vars.get('dead', False):
+            leftover_food = player.food
+            final_cash = player.cash
         
         for p in player.in_all_rounds():
             total_interest_payments += p.interest_payment
@@ -137,13 +164,20 @@ class Results(Page):
             total_salaries += p.salary
             total_food_expense += p.food_expense
             
+            if p.died:
+                leftover_food = p.food
+                final_cash = p.cash
+            
         return {
             'total_interest_payments': total_interest_payments,
             'total_asset_payments': total_asset_payments,
             'total_salaries': total_salaries,
             'total_food_expense': total_food_expense,
-            'leftover_food': player.food,
-            'final_cash': player.cash
+            'leftover_food': leftover_food,
+            'final_cash': final_cash,
+            'player_dead': player.participant.vars.get('dead', False),
+            'player_death_round': player.participant.vars.get('death_round', 0),
+            'player_death_reason': player.participant.vars.get('death_reason', '')
         }
 
 

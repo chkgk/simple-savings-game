@@ -10,8 +10,7 @@ The player chooses how much food to purchase in each round and how much to inves
 
 - add questionnaires
 - implement a training period
-- implement two apps to have two rounds with different regiemes
-- implement "death" that occurs if player does not have food left to consume and not enough cash to purchase more food
+- implement two apps to have two rounds with different regimes
 - calibrate parameters
 - fix floating point result display
 
