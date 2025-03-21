@@ -33,8 +33,17 @@
     <div class="card-body">
         <div class="row">
             <div class="col-8">
-                {{ formfield 'food_purchase' }}
-                {{ formfield 'risky_investment' }}
+                <label for="id_food_purchase" class="form-label">How many units of food do you want to buy?</label>
+                <div class="input-group mb-3">
+                    <input type="number" min="0" step="1" class="form-control" placeholder="1, 2, 3... " aria-label="Food" aria-describedby="basic-addon1" name="food_purchase" id="id_food_purchase">
+                    <span class="input-group-text" id="basic-addon1">units</span>
+                </div>
+    
+                <label for="id_risky_investment" class="form-label">How many units of food do you want to buy?</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon2">$</span>
+                    <input type="number" min="0" step="0.01" class="form-control" placeholder="1.23 " aria-label="investment" aria-describedby="basic-addon2" name="risky_investment" id="id_risky_investment">
+                </div>
             </div>
             <div class="col-4">
                 <h4>Expenses</h4>
@@ -113,7 +122,7 @@
     
     function update_expenses() {
         let food_input_value = parseInt(food_input.value) || 0;
-        let asset_expense_value = parseInt(asset_input.value) || 0;
+        let asset_expense_value = parseFloat(asset_input.value) || 0;
         
         food_expense = food_input_value * js_vars.food_price;
         asset_expense = asset_expense_value;

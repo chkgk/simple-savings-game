@@ -35,8 +35,8 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
     inflation_regime = models.StringField()
-    food_purchase = models.IntegerField(label="How many units of food do you want to buy?")
-    risky_investment = models.IntegerField(label="How much cash do you want to invest in the asset?")
+    food_purchase = models.IntegerField()
+    risky_investment = models.CurrencyField()
     
     died = models.BooleanField(default=False)
     
