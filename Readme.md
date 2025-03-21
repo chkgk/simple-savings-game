@@ -12,7 +12,6 @@ The player chooses how much food to purchase in each round and how much to inves
 - implement a training period
 - implement two apps to have two rounds with different regimes
 - calibrate parameters
-- fix floating point result display
 
 ## Setup:
 ```bash

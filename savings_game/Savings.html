@@ -118,9 +118,9 @@
         food_expense = food_input_value * js_vars.food_price;
         asset_expense = asset_expense_value;
         total_expense = food_expense + asset_expense;
-        food_expense_span.innerHTML = "$" + food_expense;
-        asset_expense_span.innerHTML = "$" + asset_expense;
-        total_expense_span.innerHTML = "$" + total_expense;
+        food_expense_span.innerHTML = "$" + food_expense.toFixed(2);
+        asset_expense_span.innerHTML = "$" + asset_expense.toFixed(2);
+        total_expense_span.innerHTML = "$" + total_expense.toFixed(2);
         
         check_balances();
     }
