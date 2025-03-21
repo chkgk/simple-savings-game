@@ -6,7 +6,7 @@ SESSION_CONFIGS = [
         name='savings_game_low',
         app_sequence=['savings_game'],
         num_demo_participants=2,
-        inflation_regime='low'
+        inflation_regime='low',
     ),
     dict(
         display_name='Savings game, 12 months, high inflation',

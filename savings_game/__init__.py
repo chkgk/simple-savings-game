@@ -1,4 +1,5 @@
 from otree.api import *
+from savings_game_config import SAVINGS_GAME_CONFIG
 import random
 
 doc = """
@@ -10,29 +11,6 @@ class C(BaseConstants):
     NAME_IN_URL = 'savings_game'
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 12 + 1  # last one is not actually played, we just need it for calculations
-    
-    CONFIG = {
-        'low': {
-            'INITIAL_CASH': 25,
-            'INITIAL_FOOD': 0,
-            'INITIAL_SALARY': 4.00,
-            'INITIAL_FOOD_PRICE': 4.20,
-            'SAVINGS_INTEREST_RATE': 0.019,
-            'ASSET_EXPECTED_RETURN': 0.06,
-            'ASSET_STANDARD_DEVIATION': 0.1,
-            'INFLATION_RATE': 0.05
-        },
-        'high': {
-            'INITIAL_CASH': 25,
-            'INITIAL_FOOD': 0,
-            'INITIAL_SALARY': 4.00,
-            'INITIAL_FOOD_PRICE': 4.20,
-            'SAVINGS_INTEREST_RATE': 0.019,
-            'ASSET_EXPECTED_RETURN': 0.06,
-            'ASSET_STANDARD_DEVIATION': 0.1,
-            'INFLATION_RATE': 0.15
-        }
-    }
     
 
 class Subsession(BaseSubsession):
@@ -71,7 +49,7 @@ class Player(BasePlayer):
 
 def creating_session(subsession):
     regime = subsession.session.config['inflation_regime']
-    config = C.CONFIG[regime]
+    config = SAVINGS_GAME_CONFIG[regime]
     
     subsession.inflation_regime = regime
     subsession.initial_cash = config['INITIAL_CASH']
