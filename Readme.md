@@ -8,9 +8,6 @@ The player chooses how much food to purchase in each round and how much to inves
 
 ## To do:
 
-- add questionnaires
-- implement a training period
-- implement two apps(?) to have two rounds with different inflation regimes
 - calibrate parameters
 
 ## Setup:
