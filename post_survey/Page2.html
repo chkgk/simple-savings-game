@@ -1,0 +1,33 @@
+{% extends "global/Page.html" %}
+
+{% block title %}
+    Financial Literacy
+{% endblock %}
+
+{% block content %}
+    <p>
+        Below, you find three questions concerning financial literacy. Each question has multiple answers, of which exactly one is true.
+        Please answer the following questions to the best of your knowledge. Each correct answer contributes <strong>X €</strong> to your remuneration.
+    </p>
+
+    <div class="mb-4">
+        <strong>{{ form.finlit_q1.label }}</strong>
+        {{ form.finlit_q1 }}
+    </div>
+
+    <div class="mb-4">
+        <strong>{{ form.finlit_q2.label }}</strong>
+        {{ form.finlit_q2 }}
+    </div>
+
+    <div class="mb-4">
+        <strong>{{ form.finlit_q3.label }}</strong>
+        {{ form.finlit_q3 }}
+    </div>
+
+    {{ next_button }}
+{% endblock %}
+
+
+
+

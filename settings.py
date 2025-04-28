@@ -2,6 +2,13 @@ from os import environ
 
 SESSION_CONFIGS = [
     dict(
+        name='instructions',
+        display_name='Instructions',
+        num_demo_participants=1,
+        app_sequence=['instructions'],
+        inflation_regime='training',
+    ),
+    dict(
         display_name='Savings game, 12 months, low inflation',
         name='savings_game_low',
         app_sequence=['savings_game'],
@@ -13,6 +20,19 @@ SESSION_CONFIGS = [
         name='savings_game_high',
         app_sequence=['savings_game'],
         num_demo_participants=2,
+        inflation_regime='high'
+    ),
+    dict(
+        name='post_survey',
+        display_name="Post-Experiment Survey",
+        app_sequence=['post_survey'],
+        num_demo_participants=1,
+    ),
+    dict(
+        name='complete_experiment',
+        display_name="Complete Experiment",
+        app_sequence=['instructions', 'savings_game', 'post_survey'],
+        num_demo_participants=1,
         inflation_regime='high'
     ),
 ]

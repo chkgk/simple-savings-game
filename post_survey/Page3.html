@@ -1,0 +1,70 @@
+{% extends "global/Page.html" %}
+{% block title %}Time Preference{% endblock %}
+
+{% block content %}
+<p>
+In the following table, you will see two payments in each row: €10 today, or a higher amount in 6 months. The amount increases by €1 from row to row over 6 months (from €11 in the first row to €16 in the sixth row). 
+</p>
+
+<p>
+For each of the 6 lines, please think about which payment (A: €10 today or B: the higher amount in 6 months) you would prefer. You can also think of the question as the amount you would be willing to wait 6 months for the payment. To answer the question, simply click on ‘B’ in the line that contains the amount on the right from which you would wait. If you would always prefer the €10 today, click on ‘A’ in the last line. The remaining lines will then be filled in automatically.
+</p>
+
+<table class="table table-bordered text-center">
+    <thead>
+        <tr>
+            <th>Choice</th>
+            <th>Choice A</th>
+            <th>Today (A)</th>
+            <th>In 6 Months (B)</th>
+            <th>Choice B</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for row in rows %}
+    <tr>
+        <td>{{ row.index }}</td>
+        <td><input type="radio" name="time_preference_{{ row.index }}" value="A" required></td>
+        <td>€{{ row.today }}</td>
+        <td>€{{ row.future }}</td>
+        <td><input type="radio" name="time_preference_{{ row.index }}" value="B" required></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{{ next_button }}
+
+{% block scripts %}
+<script>
+    const numChoices = 6;
+
+    for (let i = 1; i <= numChoices; i++) {
+        document.querySelector(`input[name="time_preference_${i}"][value="A"]`).addEventListener("click", () => handleClick(i, "A"));
+        document.querySelector(`input[name="time_preference_${i}"][value="B"]`).addEventListener("click", () => handleClick(i, "B"));
+    }
+
+    function handleClick(index, choice) {
+        if (choice === "B") {
+            // Fill all rows above with A
+            for (let j = 1; j < index; j++) {
+                document.querySelector(`input[name="time_preference_${j}"][value="A"]`).checked = true;
+            }
+            // Fill current and all below with B
+            for (let j = index; j <= numChoices; j++) {
+                document.querySelector(`input[name="time_preference_${j}"][value="B"]`).checked = true;
+            }
+        } else if (choice === "A") {
+            // Fill all rows above and current with A
+            for (let j = 1; j <= index; j++) {
+                document.querySelector(`input[name="time_preference_${j}"][value="A"]`).checked = true;
+            }
+            // Fill all rows below with B
+            for (let j = index + 1; j <= numChoices; j++) {
+                document.querySelector(`input[name="time_preference_${j}"][value="B"]`).checked = true;
+            }
+        }
+    }
+</script>
+{% endblock %}
+{% endblock %}

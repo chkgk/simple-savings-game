@@ -1,0 +1,38 @@
+{% extends "global/Page.html" %}
+
+{% block title %}
+    Risk Preference
+{% endblock %}
+
+{% block content %}
+    <p>Below, you find a table with five different choices. Each choice represents a gamble with two alternatives, Event A and Event B. Both choices occur with the same probability of 50%. You will be informed about the realization of the events within the gamble afterward. The payoff from the gamble will be added to your remuneration.  </p>
+    <p><strong>Please choose one of the five gambles:</strong></p>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Choose</th>
+                <th>Gamble</th>
+                <th>Event A</th>
+                <th>Event B</th>
+                <th>Probability A</th>
+                <th>Probability B</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for gamble in gambles %}
+            <tr>
+                <td>
+                    <input type="radio" name="risk_choice" value="{{ gamble.value }}" required>
+                </td>
+                <td>{{ gamble.value }}</td>
+                <td>{{ gamble.event_a }} €</td>
+                <td>{{ gamble.event_b }} €</td>
+                <td>50%</td>
+                <td>50%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {{ next_button }}
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "global/Page.html" %}
+{% block title %}Last Page{% endblock %}
+
+{% block content %}
+
+    <p>Thank you for participating in this experiment.</p>
+
+    {% if pay_for_real %}
+        <p>You have been selected for payment. Please click the button below to enter your payment details. You will be redirected to a different page so that your payment information is stored separately from your decisions. We do not track your personal information back to your decisions.</p>
+        <a class="btn btn-primary" href="http://example.com?id={{ participant.code }}" >Enter Payment Details</a>
+    {% else %}
+        <p>Unfortunately, you have not been randomly selected for payment.</p>
+    {% endif %}
+
+{% endblock %}
+
+
+

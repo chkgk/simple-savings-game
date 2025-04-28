@@ -5,8 +5,7 @@ SAVINGS_GAME_CONFIG = {
         'INITIAL_SALARY': 4.00,
         'INITIAL_FOOD_PRICE': 4.20,
         'SAVINGS_INTEREST_RATE': 0.019,
-        'ASSET_EXPECTED_RETURN': 0.06,
-        'ASSET_STANDARD_DEVIATION': 0.1,
+        'ASSET_PAYOFFS': [1.6, 0.75, 1.6, 1.6, 0.75, 1.6, 0.75, 0.75, 1.6, 1.6, 0.75, 0.75, 0.75],
         'INFLATION_RATE': 0.05
     },
     'high': {
@@ -15,8 +14,7 @@ SAVINGS_GAME_CONFIG = {
         'INITIAL_SALARY': 4.00,
         'INITIAL_FOOD_PRICE': 4.20,
         'SAVINGS_INTEREST_RATE': 0.019,
-        'ASSET_EXPECTED_RETURN': 0.06,
-        'ASSET_STANDARD_DEVIATION': 0.1,
+        'ASSET_PAYOFFS': [1.6, 0.75, 1.6, 1.6, 0.75, 1.6, 0.75, 0.75, 1.6, 1.6, 0.75, 0.75, 0.75],
         'INFLATION_RATE': 0.15
     },
     'training': {
@@ -25,8 +23,7 @@ SAVINGS_GAME_CONFIG = {
         'INITIAL_SALARY': 4.00,
         'INITIAL_FOOD_PRICE': 4.20,
         'SAVINGS_INTEREST_RATE': 0.019,
-        'ASSET_EXPECTED_RETURN': 0.06,
-        'ASSET_STANDARD_DEVIATION': 0.1,
+        'ASSET_PAYOFFS': [1.6, 0.75, 1.6, 1.6, 0.75, 1.6, 0.75, 0.75, 1.6, 1.6, 0.75, 0.75, 0.75],
         'INFLATION_RATE': 0.0
     }
 }

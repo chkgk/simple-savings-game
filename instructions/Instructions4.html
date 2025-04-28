@@ -1,0 +1,30 @@
+{{ block title }}
+    Instructions: Cash
+{{ endblock }}
+
+{{ block content }}
+
+<p>Cash is the sum of:</p>
+<ul>
+    <li>1) Your previous Cash balance</li>
+    <li>2) The Interest Earned last month</li>
+    <li>3) Your monthly Salary Income</li>
+    <li>4) The Total Asset Payment from your investment in the previous month</li>
+</ul>
+
+<p>Additionally, your Cash balance will decrease based on your Total Expenses, which consist of:</p>
+<ul>
+    <li>5) Food Expenses</li>
+    <li>6) Asset Investments</li>
+</ul>
+
+<hr>
+
+<h4>Comprehension Question</h4>
+{{ formfield player.cash_balance_question }}
+
+{{ next_button }}
+
+{{ endblock }}
+
+

@@ -8,25 +8,25 @@
         <div class="row">
             <div class="col-4">
                 <h4>Portfolio</h4>
-                Cash: <span id="cash">{{ cash }}</span><br>
-                Food: <span id="food">{{ food }}</span>
+                <b>Food: <span id="food">{{ food }}</span></b><br>
+                Cash: <span id="cash">{{ cash }}</span>
+            </div>
+            <div class="col-4">
+                <h4>Salary & Prices</h4>
+                <b>Food price: <span id="food_price">{{ food_price }}</span></b><br>
+                Salary income: <span id="salary">{{ salary }}</span><br>
+
             </div>
             <div class="col-4">
                 <h4>History</h4>
-                Salary income: <span id="salary">{{ salary }}</span><br>
                 Interest payment: <span id="interest">{{ player.interest_payment }} </span><br>
-                Asset payment: <span id="return">{{ player.asset_payment }}</span>
-            </div>
-            <div class="col-4">
-                <h4>Information</h4>
-                Food price: <span id="food_price">{{ food_price }}</span><br>
-                Savings account interest rate: <span id="interest_rate">{{ interest_rate }}%</span><br>
-                Asset expected return: <span id="asset_return">{{ asset_expected_return }}%</span>
+                Asset payment: <span id="return">{{ player.asset_payment }}</span><br>
+                Realized Asset Payoff: <span id="realized_payoff">{{ realized_asset_payoff|to2 }}</span>
             </div>
         </div>
     </div>
 </div>
-<div class="card">
+<div class="card mb-3">
     <h3 class="card-header">
         Decision
     </h3>
@@ -54,6 +54,15 @@
             </div>
         </div>
         <span id="error_message"></span>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h4>General Information</h4>
+        Savings account interest rate: <span id="interest_rate">{{ interest_rate }}%</span><br>
+        Asset Payoff 1 (50% chance): $1.60<br>
+        Asset Payoff 2 (50% chance): $0.70
     </div>
 </div>
 
@@ -88,8 +97,8 @@
     let total_expense = 0;
     
     // event listeners
-    food_input.addEventListener('change', update_expenses);
-    asset_input.addEventListener('change', update_expenses);
+    food_input.addEventListener('keyup', update_expenses);
+    asset_input.addEventListener('keyup', update_expenses);
     
     function set_initial_values() {
         otree_next.innerHTML = "Confirm";

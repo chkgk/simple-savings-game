@@ -1,0 +1,124 @@
+{{ block title }}
+    Month {{ player.round_number }} of {{ max_rounds }}
+{{ endblock }}
+
+{{ block content }}
+<p>
+    Below is an example of the primary screen you will see and interact with during the Simple Savings Game. In the upper part of the game screen, you see important data under the sections “Portfolio”, “History”, and “Information”. In the lower part under “Decision”, you must make your consumption and investment decisions. If you are familiar with the game screen, please execute the Training Task.
+</p>
+
+{% if training %}
+<div class="alert alert-info">
+    <strong>Training Task:</strong> {{ task }}
+</div>
+{% endif %}
+
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-4">
+                <h4>Portfolio</h4>
+                Cash: <span id="cash">${{ cash }}</span><br>
+		Food Reserves: <span id="food">{{ food }}</span><br>
+            </div>
+            <div class="col-4">
+                <h4>History</h4>
+		Salary Income: <span id="salary">${{ salary }}</span><br>
+		Interest Payment: <span id="interest">${{ interest_payment }}</span><br>
+		Total Asset Payment: <span id="return">${{ asset_payment }}</span><br>
+                Realized Asset Pay-Off: 
+                <span id="realized_payoff">
+                    {% if realized_asset_payoff %}
+                        {{ realized_asset_payoff }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </span><br>
+            </div>
+            <div class="col-4">
+                <h4>Information</h4>
+		Food Price: <span id="food_price">${{ food_price }}</span><br>
+                Cash Interest Rate: <span id="interest_rate">{{ interest_rate }}%</span><br>
+                Asset Pay-Off 1 (50%): 1.60<br>
+                Asset Pay-Off 2 (50%): 0.75<br>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3 class="card-header">Decision</h3>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-8">
+                <label for="id_food_purchase" class="form-label">How many units of Food do you want to buy?</label>
+                <div class="input-group mb-3">
+                    <input type="number" min="0" step="1" class="form-control" name="food_purchase" id="id_food_purchase">
+                    <span class="input-group-text">units</span>
+                </div>
+
+                <label for="id_risky_investment" class="form-label">How many units of the Asset do you want to buy?</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">$</span>
+                    <input type="number" min="0" step="0.01" class="form-control" name="risky_investment" id="id_risky_investment">
+                </div>
+            </div>
+            <div class="col-4">
+                <h4>Expenses</h4>
+                Food expense: <span id="food_expense">-</span><br>
+                Asset investment: <span id="asset_expense">-</span><br>
+                <p><b>Total expenses: <span id="total_expense">-</span></b></p>
+                <button class="otree-btn-next btn btn-primary">Confirm</button>
+            </div>
+        </div>
+        <span id="error_message" class="text-danger"></span>
+    </div>
+</div>
+{{ endblock }}
+
+{{ block scripts }}
+<script>
+    const food_input = document.getElementById('id_food_purchase');
+    const asset_input = document.getElementById('id_risky_investment');
+    const next_button = document.getElementsByClassName('otree-btn-next')[0];
+
+    const food_expense_span = document.getElementById('food_expense');
+    const asset_expense_span = document.getElementById('asset_expense');
+    const total_expense_span = document.getElementById('total_expense');
+    const error_message_span = document.getElementById('error_message');
+
+    function update_expenses() {
+        let food_qty = parseInt(food_input.value);
+        if (isNaN(food_qty)) food_qty = 0;
+
+        let asset_amt = parseFloat(asset_input.value);
+        if (isNaN(asset_amt)) asset_amt = 0;
+
+        const food_expense = food_qty * js_vars.food_price;
+        const asset_expense = asset_amt;
+        const total_expense = food_expense + asset_expense;
+
+        food_expense_span.innerText = "$" + food_expense.toFixed(2);
+        asset_expense_span.innerText = "$" + asset_expense.toFixed(2);
+        total_expense_span.innerText = "$" + total_expense.toFixed(2);
+
+        // Validation
+        let error = "";
+        if (total_expense > js_vars.cash) {
+            error = "Not enough cash.";
+            next_button.disabled = true;
+        } else if ((js_vars.food + food_qty) < 1) {
+            error = "You must have at least 1 unit of food.";
+            next_button.disabled = true;
+        } else {
+            next_button.disabled = false;
+        }
+
+        error_message_span.innerText = error;
+    }
+
+    food_input.addEventListener('input', update_expenses);
+    asset_input.addEventListener('input', update_expenses);
+    food_input.focus();
+</script>
+{{ endblock scripts }}

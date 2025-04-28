@@ -1,0 +1,21 @@
+{% extends "global/Page.html" %}
+
+{% block title %}
+    Compound Interest
+{% endblock %}
+
+{% block content %}
+<p>The following questions cover the compound interest effect. For Questions 1 and 4, manually type a number in the respective field. Questions 2 and 3 are single choice.</p>
+<p>Each correct answer contributes X € to your remuneration.</p>
+
+<hr>
+
+<div><strong>Question 1:</strong> {{ formfield 'compound_q1' }}</div>
+<div><strong>Question 2:</strong> {{ formfield 'compound_q2' }}</div>
+<div><strong>Question 3:</strong> {{ formfield 'compound_q3' }}</div>
+<div><strong>Question 4:</strong> {{ formfield 'compound_q4' }}</div>
+
+{{ next_button }}
+{% endblock %}
+
+

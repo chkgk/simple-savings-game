@@ -11,6 +11,7 @@ class C(BaseConstants):
     NAME_IN_URL = 'savings_game'
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 12 + 1  # last one is not actually played, we just need it for calculations
+    PAYMENT_PROBABILITY = 0.1
     
 
 class Subsession(BaseSubsession):
@@ -44,6 +45,10 @@ class Player(BasePlayer):
     food_expense = models.CurrencyField(default=0)
     interest_payment = models.CurrencyField(default=0)
     asset_payment = models.CurrencyField(default=0)
+    realized_asset_payoff = models.FloatField(blank=True)
+
+    food_price_estimate_6 = models.StringField(label="Estimation (after 6 months)")
+    food_price_estimate_12 = models.StringField(label="Estimation (after 12 months)")
     
 # FUNCTIONS
 
@@ -57,14 +62,15 @@ def creating_session(subsession):
     subsession.initial_salary = config['INITIAL_SALARY']
     subsession.initial_food_price = config['INITIAL_FOOD_PRICE']
     subsession.savings_interest_rate = config['SAVINGS_INTEREST_RATE']
-    subsession.asset_expected_return = config['ASSET_EXPECTED_RETURN']
-    subsession.asset_standard_deviation = config['ASSET_STANDARD_DEVIATION']
+    # subsession.asset_expected_return = config['ASSET_EXPECTED_RETURN']
+    # subsession.asset_standard_deviation = config['ASSET_STANDARD_DEVIATION']
     subsession.inflation_rate = config['INFLATION_RATE']
     
     for p in subsession.get_players():
         if p.round_number == 1:
             p.cash = subsession.initial_cash
             p.food = subsession.initial_food
+            p.participant.vars["pay_for_real"] = random.random() <= C.PAYMENT_PROBABILITY
 
 def get_food_price(player):
     subs = player.subsession
@@ -80,15 +86,22 @@ def js_and_template_vars(player):
         'food': player.food,
         'salary': cu(subs.initial_salary),
         'interest_rate': subs.savings_interest_rate * 100,
-        'asset_expected_return': subs.asset_expected_return * 100,
-        'max_rounds': C.NUM_ROUNDS - 1
+        # 'asset_expected_return': subs.asset_expected_return * 100,
+        'max_rounds': C.NUM_ROUNDS - 1,
+        'realized_asset_payoff': player.field_maybe_none("realized_asset_payoff") or '-',
     }
 
-def get_asset_payment(subsession, investment):
+def get_asset_payment_uniform(subsession, investment):
     mu = subsession.asset_expected_return
     sigma = subsession.asset_standard_deviation
     sample = random.gauss(mu, sigma)
     return investment * sample
+
+def get_asset_payment(subsession, investment):
+    regime = subsession.session.config['inflation_regime']
+    payoff_list = SAVINGS_GAME_CONFIG[regime]['ASSET_PAYOFFS']
+    realized_payoff = payoff_list[subsession.round_number - 1]
+    return realized_payoff, realized_payoff * investment
 
 # PAGES
 class Savings(Page):
@@ -116,7 +129,8 @@ class Savings(Page):
         
         # calculate new cash
         interest_payment = cu(unspent_cash * subs.savings_interest_rate)
-        asset_payment = cu(get_asset_payment(subs, player.risky_investment))
+        asset_realization, asset_payoff = get_asset_payment(subs, player.risky_investment)
+        asset_payment = cu(asset_payoff)
         salary = subs.initial_salary
         new_cash = unspent_cash + salary + interest_payment + asset_payment + asset_expense
         
@@ -142,6 +156,7 @@ class Savings(Page):
         next_player.cash = new_cash
         next_player.food = new_food
         next_player.asset_payment = asset_payment
+        next_player.realized_asset_payoff = asset_realization
         next_player.salary = salary
         next_player.interest_payment = interest_payment
             
@@ -153,6 +168,20 @@ class Savings(Page):
     @staticmethod
     def vars_for_template(player):
         return js_and_template_vars(player)
+
+class FoodPriceEstimate6(Page):
+    form_model = 'player'
+    form_fields = ['food_price_estimate_6']
+
+    def is_displayed(player):
+        return player.round_number == 6
+
+class FoodPriceEstimate12(Page):
+    form_model = 'player'
+    form_fields = ['food_price_estimate_12']
+
+    def is_displayed(player):
+        return player.round_number == 12
 
 
 class Results(Page):
@@ -183,6 +212,10 @@ class Results(Page):
                 leftover_food = p.food
                 final_cash = p.cash
             
+        # set payoff if paid for real
+        if player.participant.vars.get('pay_for_real', False):
+            player.payoff = final_cash
+            
         return {
             'total_interest_payments': total_interest_payments,
             'total_asset_payments': total_asset_payments,
@@ -196,4 +229,4 @@ class Results(Page):
         }
 
 
-page_sequence = [Savings, Results]
+page_sequence = [Savings, FoodPriceEstimate6, FoodPriceEstimate12, Results]
