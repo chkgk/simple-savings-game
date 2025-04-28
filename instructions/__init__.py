@@ -18,17 +18,17 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
     food_reserve_question = models.IntegerField(
-        label="How many units of Food are consumed each month?",
+        label="How many units of food are consumed each month?",
         choices=[(3, '3'), (0, '0'), (1, '1'), (13, '13')],
         widget=widgets.RadioSelect,
     )
     cash_interest_question = models.IntegerField(
-        label="If your Cash is $100 at the beginning of a month and the only expenditure is an investment of $20 into the Asset, what amount will earn 1.9% interest?",
+        label="If your cash is $100 at the beginning of a month and the only expenditure is an investment of $20 into the asset, what amount will earn 1.9% interest?",
         choices=[(100, '$100'), (120, '$120'), (20, '$20'), (80, '$80')],
         widget=widgets.RadioSelect,
     )
     cash_balance_question = models.IntegerField(
-        label="Suppose you had $100 in Cash last month. If you earn $10 in interest, receive $20 in monthly salary, get $40 in Total Asset Payment, and spend $30 on Food, what will your Cash be before continuing to the next month?",
+        label="Suppose you had $100 in cash last month. If you earn $10 in interest, receive $20 in monthly salary, get $40 in Total Asset Payment, and spend $30 on food, what will your cash be before continuing to the next month?",
         choices=[(100, '$100'), (170, '$170'), (200, '$200'), (140, '$140')],
         widget=widgets.RadioSelect,
     )
@@ -77,32 +77,32 @@ def creating_session(subsession):
 
 def food_reserve_question_error_message(player, value):
     if value != 1:
-        return "Wrong. Please read the corresponding paragraphs again."
+        return "Please review the instructions carefully: You must consume exactly 1 unit of Food each month."
     return None
 
 def cash_interest_question_error_message(player, value):
     if value != 80:
-        return "Wrong. Please read the corresponding paragraphs again."
+        return "Please review the instructions carefully: Only the uninvested Cash earns 1.9% interest."
     return None
 
 def cash_balance_question_error_message(player, value):
     if value != 140:
-        return "Wrong. Please read the corresponding paragraphs again."
+        return "Please review the instructions: Your Cash is increased by income (interest, salary, asset payment) and reduced by expenses (food and investment costs)."
     return None
 
 def interest_rate_change_question_error_message(player, value):
     if value != "no":
-        return "Wrong. Please read the corresponding paragraphs again."
+        return "Remember: The Interest Rate stays constant throughout the entire game."
     return None
 
 def food_price_change_question_error_message(player, value):
     if value != "never_decrease":
-        return "Wrong. Please read the corresponding paragraphs again."
+        return "Please review: The price of food can increase during the game, but it can never decrease."
     return None
 
 def remuneration_question_error_message(player, value):
     if value != "cash":
-        return "Wrong. Please read the corresponding paragraphs again."
+        return "Careful: Only your final Cash balance determines your study earnings."
     return None
 
 
@@ -144,7 +144,7 @@ class TrainingRound1(Page):
     def vars_for_template(player):
         return {
             'training': True,
-            'task': 'Buy 3 units of food and invest 5 $.',
+            'task': 'Buy 3 units of food and invest $5.',
             'cash': "30.00",
             'food': "0",
             'salary': "8.00",
@@ -174,14 +174,14 @@ class TrainingRound2(Page):
         food_expense = values['food_purchase'] * food_price
         total_expense = food_expense + values['risky_investment']
         if values['food_purchase'] != 2 or abs(food_expense - 8.40) > 0.05 or abs(total_expense - 13.40) > 0.05:
-            return "Please buy 2 units of food so that food expenses are 8.40 $ and total expenses are 13.40 $."
+            return "Please buy 2 units of food and invest $5 so that food expenses are $8.40 and total expenses are $13.40."
         return None
 
     @staticmethod
     def vars_for_template(player):
         return {
             'training': True,
-            'task': 'Now buy 2 units of Food and invest 5 $ so that Food expenses are 8.40 $ and Total expenses are 13.40 $.',
+            'task': 'Now buy 2 units of food and invest $5 so that food expenses are $8.40 and Total expenses are $13.40.',
             'cash': "28.64",
             'food': "2",
             'salary': "8.00",
@@ -224,6 +224,5 @@ page_sequence = [
     TrainingRound1,
     TrainingRound2,
     Instructions6,
-    Instructions7,
-    Instructions8,
+    Instructions7
 ]

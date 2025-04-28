@@ -4,29 +4,31 @@
 
 {{ block content }}
 <p>
-    From Month 1 to Month 2, certain values changed because of your action in Month 1. If you are familiar with the changes, please execute the Training Task.
+    From month 1 to month 2, certain values changed because of your action in month 1. If you are familiar with the changes, please complete the Training Task.
 </p>
 
-{% if training %}
 <div class="alert alert-info">
     <strong>Training Task:</strong> {{ task }}
 </div>
-{% endif %}
 
 <div class="card mb-3">
     <div class="card-body">
         <div class="row">
             <div class="col-4">
-                <h4>Portfolio</h4>
+                <h4>Reserves</h4>
+                Food: <span id="food">{{ food }}</span><br>
                 Cash: <span id="cash">${{ cash }}</span><br>
-		Food Reserves: <span id="food">{{ food }}</span><br>
             </div>
             <div class="col-4">
-                <h4>History</h4>
-		Salary Income: <span id="salary">${{ salary }}</span><br>
-		Interest Payment: <span id="interest">${{ interest_payment }}</span><br>
-		Total Asset Payment: <span id="return">${{ asset_payment }}</span><br>
-                Realized Asset Pay-Off: 
+                <h4>Salary & Prices</h4>
+                Food Price: <span id="food_price">${{ food_price }}</span><br>
+                Salary Income: <span id="salary">${{ salary }}</span>
+            </div>
+            <div class="col-4">
+                <h4>Asset Information</h4>
+                Interest Payment: <span id="interest">${{ interest_payment }}</span><br>
+                Total Asset Payment: <span id="return">${{ asset_payment }}</span><br>
+                Realized Asset Pay-Off:
                 <span id="realized_payoff">
                     {% if realized_asset_payoff %}
                         {{ realized_asset_payoff }}
@@ -35,32 +37,28 @@
                     {% endif %}
                 </span><br>
             </div>
-            <div class="col-4">
-                <h4>Information</h4>
-		Food Price: <span id="food_price">${{ food_price }}</span><br>
-                Cash Interest Rate: <span id="interest_rate">{{ interest_rate }}%</span><br>
-                Asset Pay-Off 1 (50%): 1.60<br>
-                Asset Pay-Off 2 (50%): 0.75<br>
-            </div>
         </div>
     </div>
 </div>
 
-<div class="card">
+<div class="card mb-3">
     <h3 class="card-header">Decision</h3>
     <div class="card-body">
         <div class="row">
             <div class="col-8">
                 <label for="id_food_purchase" class="form-label">How many units of Food do you want to buy?</label>
                 <div class="input-group mb-3">
-                    <input type="number" min="0" step="1" class="form-control" name="food_purchase" id="id_food_purchase">
+                    <input type="number" min="0" step="1" class="form-control" name="food_purchase"
+                           id="id_food_purchase">
                     <span class="input-group-text">units</span>
                 </div>
 
-                <label for="id_risky_investment" class="form-label">How many units of the Asset do you want to buy?</label>
+                <label for="id_risky_investment" class="form-label">How many units of the Asset do you want to
+                    buy?</label>
                 <div class="input-group mb-3">
                     <span class="input-group-text">$</span>
-                    <input type="number" min="0" step="0.01" class="form-control" name="risky_investment" id="id_risky_investment">
+                    <input type="number" min="0" step="0.01" class="form-control" name="risky_investment"
+                           id="id_risky_investment">
                 </div>
             </div>
             <div class="col-4">
@@ -72,6 +70,15 @@
             </div>
         </div>
         <span id="error_message" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h4>General Information</h4>
+        Cash Interest Rate: <span id="interest_rate">{{ interest_rate }}%</span><br>
+        Asset Pay-Off 1 (50%): 1.60<br>
+        Asset Pay-Off 2 (50%): 0.75<br>
     </div>
 </div>
 {{ endblock }}
@@ -117,8 +124,8 @@
         error_message_span.innerText = error;
     }
 
-    food_input.addEventListener('input', update_expenses);
-    asset_input.addEventListener('input', update_expenses);
+    food_input.addEventListener('keyup', update_expenses);
+    asset_input.addEventListener('keyup', update_expenses);
     food_input.focus();
 </script>
 {{ endblock scripts }}

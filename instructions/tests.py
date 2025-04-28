@@ -13,4 +13,3 @@ class PlayerBot(Bot):
         yield TrainingRound2, {'food_purchase': 2, 'risky_investment': 5}
         yield Instructions6, {'remuneration_question': 'cash'}
         yield Instructions7
-        yield Instructions8
