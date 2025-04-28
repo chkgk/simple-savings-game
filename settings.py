@@ -11,16 +11,14 @@ SESSION_CONFIGS = [
     dict(
         display_name='Savings game, 12 months, low inflation',
         name='savings_game_low',
-        app_sequence=['savings_game'],
+        app_sequence=['savings_game_1'],
         num_demo_participants=2,
-        inflation_regime='low',
     ),
     dict(
         display_name='Savings game, 12 months, high inflation',
         name='savings_game_high',
-        app_sequence=['savings_game'],
+        app_sequence=['savings_game_1'],
         num_demo_participants=2,
-        inflation_regime='high'
     ),
     dict(
         name='post_survey',
@@ -31,7 +29,7 @@ SESSION_CONFIGS = [
     dict(
         name='complete_experiment',
         display_name="Complete Experiment",
-        app_sequence=['instructions', 'savings_game', 'post_survey'],
+        app_sequence=['instructions', 'savings_game_1', 'savings_game_2', 'post_survey'],
         num_demo_participants=1,
         inflation_regime='high'
     ),
@@ -46,7 +44,7 @@ SESSION_CONFIG_DEFAULTS = dict(
     real_world_currency_per_point=1.00, participation_fee=0.00, doc=""
 )
 
-PARTICIPANT_FIELDS = []
+PARTICIPANT_FIELDS = ['treatment', 'pay_for_real']
 SESSION_FIELDS = []
 
 # ISO-639 code

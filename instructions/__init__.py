@@ -1,10 +1,11 @@
 from otree.api import *
-
+import random
 
 class C(BaseConstants):
     NAME_IN_URL = 'instructions'
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 1
+    PAYMENT_PROBABILITY = 0.1
 
 
 class Subsession(BaseSubsession):
@@ -68,6 +69,12 @@ class Player(BasePlayer):
 
 
 # Functions
+def creating_session(subsession):
+    for p in subsession.get_players():
+        if p.round_number == 1:
+            p.participant.vars["pay_for_real"] = random.random() <= C.PAYMENT_PROBABILITY
+            # p.participant.vars["treatment"] = random.choice(["high-high", "high-low", "low-high", "low-low"])
+
 def food_reserve_question_error_message(player, value):
     if value != 1:
         return "Wrong. Please read the corresponding paragraphs again."

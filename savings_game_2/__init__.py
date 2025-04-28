@@ -8,22 +8,14 @@ Your app description
 
 
 class C(BaseConstants):
-    NAME_IN_URL = 'savings_game'
+    NAME_IN_URL = 'savings_game_2'
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 12 + 1  # last one is not actually played, we just need it for calculations
-    PAYMENT_PROBABILITY = 0.1
+    GAME_ROUND = 2
     
 
 class Subsession(BaseSubsession):
-    initial_cash = models.CurrencyField()
-    initial_food = models.IntegerField()
-    initial_salary = models.CurrencyField()
-    initial_food_price = models.CurrencyField()
-    savings_interest_rate = models.FloatField()
-    asset_expected_return = models.FloatField()
-    asset_standard_deviation = models.FloatField()
-    inflation_rate = models.FloatField()
-    inflation_regime = models.StringField()
+    pass
 
 
 class Group(BaseGroup):
@@ -50,58 +42,66 @@ class Player(BasePlayer):
     food_price_estimate_6 = models.StringField(label="Estimation (after 6 months)")
     food_price_estimate_12 = models.StringField(label="Estimation (after 12 months)")
     
+    initial_cash = models.CurrencyField()
+    initial_food = models.IntegerField()
+    initial_salary = models.CurrencyField()
+    initial_food_price = models.CurrencyField()
+    savings_interest_rate = models.FloatField()
+    asset_expected_return = models.FloatField()
+    asset_standard_deviation = models.FloatField()
+    inflation_rate = models.FloatField()
+    inflation_regime = models.StringField()
+    
 # FUNCTIONS
+def get_regime(player):
+    treatment = player.participant.vars.get('treatment', None)
+    if treatment is None:
+        treatment = random.choice(["high-high", "high-low", "low-high", "low-low"])
+        player.participant.vars["treatment"] = treatment
 
-def creating_session(subsession):
-    regime = subsession.session.config['inflation_regime']
-    config = SAVINGS_GAME_CONFIG[regime]
+    pay_round = player.participant.vars.get('pay_round', None)
+    if pay_round is None:
+        pay_round = random.choice([1, 2])
+        player.participant.vars["pay_round"] = pay_round
     
-    subsession.inflation_regime = regime
-    subsession.initial_cash = config['INITIAL_CASH']
-    subsession.initial_food = config['INITIAL_FOOD']
-    subsession.initial_salary = config['INITIAL_SALARY']
-    subsession.initial_food_price = config['INITIAL_FOOD_PRICE']
-    subsession.savings_interest_rate = config['SAVINGS_INTEREST_RATE']
-    # subsession.asset_expected_return = config['ASSET_EXPECTED_RETURN']
-    # subsession.asset_standard_deviation = config['ASSET_STANDARD_DEVIATION']
-    subsession.inflation_rate = config['INFLATION_RATE']
-    
+    app_regimes = treatment.split('-')
+    return app_regimes[C.GAME_ROUND-1]
+
+def creating_session(subsession):    
     for p in subsession.get_players():
+        p.inflation_regime = get_regime(p)
+        config = SAVINGS_GAME_CONFIG[p.inflation_regime]
+        p.initial_cash = config['INITIAL_CASH']
+        p.initial_food = config['INITIAL_FOOD']
+        p.initial_salary = config['INITIAL_SALARY']
+        p.initial_food_price = config['INITIAL_FOOD_PRICE']
+        p.savings_interest_rate = config['SAVINGS_INTEREST_RATE']
+        p.inflation_rate = config['INFLATION_RATE']
         if p.round_number == 1:
-            p.cash = subsession.initial_cash
-            p.food = subsession.initial_food
-            p.participant.vars["pay_for_real"] = random.random() <= C.PAYMENT_PROBABILITY
+            p.cash = p.initial_cash
+            p.food = p.initial_food
 
 def get_food_price(player):
-    subs = player.subsession
     if player.round_number == 1:
-        return subs.initial_food_price
-    return subs.initial_food_price * (1 + subs.inflation_rate) ** (player.round_number - 1)
+        return player.initial_food_price
+    return player.initial_food_price * (1 + player.inflation_rate) ** (player.round_number - 1)
 
 def js_and_template_vars(player):
-    subs = player.subsession
     return {
         'food_price': cu(get_food_price(player)),
         'cash': player.cash,
         'food': player.food,
-        'salary': cu(subs.initial_salary),
-        'interest_rate': subs.savings_interest_rate * 100,
-        # 'asset_expected_return': subs.asset_expected_return * 100,
+        'salary': cu(player.initial_salary),
+        'interest_rate': player.savings_interest_rate * 100,
         'max_rounds': C.NUM_ROUNDS - 1,
         'realized_asset_payoff': player.field_maybe_none("realized_asset_payoff") or '-',
     }
 
-def get_asset_payment_uniform(subsession, investment):
-    mu = subsession.asset_expected_return
-    sigma = subsession.asset_standard_deviation
-    sample = random.gauss(mu, sigma)
-    return investment * sample
 
-def get_asset_payment(subsession, investment):
-    regime = subsession.session.config['inflation_regime']
-    payoff_list = SAVINGS_GAME_CONFIG[regime]['ASSET_PAYOFFS']
-    realized_payoff = payoff_list[subsession.round_number - 1]
-    return realized_payoff, realized_payoff * investment
+def get_asset_payment(player):
+    payoff_list = SAVINGS_GAME_CONFIG[player.inflation_regime]['ASSET_PAYOFFS']
+    realized_payoff = payoff_list[player.round_number - 1]
+    return realized_payoff, realized_payoff * player.risky_investment
 
 # PAGES
 class Savings(Page):
@@ -113,9 +113,7 @@ class Savings(Page):
         # make sure to skip if player is dead
         return player.round_number < C.NUM_ROUNDS and not player.in_round(C.NUM_ROUNDS).dead
     
-    def before_next_page(player, timeout_happened):
-        subs = player.subsession
-        
+    def before_next_page(player, timeout_happened):        
         current_cash = player.cash
         food_price = get_food_price(player)
         food_expense = player.food_purchase * food_price
@@ -126,16 +124,15 @@ class Savings(Page):
         # calculate new food
         new_food = player.food - 1 + player.food_purchase
         
-        
         # calculate new cash
-        interest_payment = cu(unspent_cash * subs.savings_interest_rate)
-        asset_realization, asset_payoff = get_asset_payment(subs, player.risky_investment)
+        interest_payment = cu(unspent_cash * player.savings_interest_rate)
+        asset_realization, asset_payoff = get_asset_payment(player)
         asset_payment = cu(asset_payoff)
-        salary = subs.initial_salary
+        salary = player.initial_salary
         new_cash = unspent_cash + salary + interest_payment + asset_payment + asset_expense
         
         # new food price
-        new_food_price = food_price * (1 + subs.inflation_rate)
+        new_food_price = food_price * (1 + player.inflation_rate)
         
         final_round_player = player.in_round(C.NUM_ROUNDS)
         
@@ -213,7 +210,8 @@ class Results(Page):
                 final_cash = p.cash
             
         # set payoff if paid for real
-        if player.participant.vars.get('pay_for_real', False):
+        part = player.participant
+        if part.vars.get('pay_for_real', False) and part.vars.get('pay_round', None) == C.GAME_ROUND:
             player.payoff = final_cash
             
         return {
