@@ -147,6 +147,7 @@ class Savings(Page):
             final_round_player.dead = True
             final_round_player.death_reason =  "not enough cash for future consumption"
             final_round_player.death_round = player.round_number
+            new_cash = 0
         
         # write variables for next round
         next_player = player.in_round(player.round_number + 1)
