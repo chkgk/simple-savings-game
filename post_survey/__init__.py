@@ -1,5 +1,6 @@
 from otree.api import *
-from otree.settings import DEBUG
+from otree.settings import DEBUG, PAYMENT_URL
+
 
 # Models
 class C(BaseConstants):
@@ -181,6 +182,7 @@ class Summary(Page):
             "payment_round": player.participant.vars.get('pay_round', 1),
             "game_payment": float(player.participant.vars.get('game_payoff', 0.00)),
             "final_pay_euro": player.participant.payoff,
+            "payment_url": PAYMENT_URL,
             "DEBUG": DEBUG,
         }
 
