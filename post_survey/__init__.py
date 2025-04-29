@@ -1,4 +1,5 @@
 from otree.api import *
+from otree.settings import DEBUG
 
 # Models
 class C(BaseConstants):
@@ -175,7 +176,13 @@ class Page5(Page):
 
 class Summary(Page):
     def vars_for_template(player):
-        return {"pay_for_real": player.participant.vars.get('pay_for_real', False)}
+        return {
+            "pay_for_real": player.participant.vars.get('pay_for_real', False),
+            "payment_round": player.participant.vars.get('pay_round', 1),
+            "game_payment": float(player.participant.vars.get('game_payoff', 0.00)),
+            "final_pay_euro": player.participant.payoff,
+            "DEBUG": DEBUG,
+        }
 
 
 page_sequence = [Page1, Page2, Page3, Page4, Page5, Summary]

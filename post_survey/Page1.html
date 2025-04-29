@@ -5,13 +5,14 @@
 {% endblock %}
 
 {% block content %}
-    <p>Below, you find a table with five different choices. Each choice represents a gamble with two alternatives, Event A and Event B. Both choices occur with the same probability of 50%. You will be informed about the realization of the events within the gamble afterward. The payoff from the gamble will be added to your remuneration.  </p>
-    <p><strong>Please choose one of the five gambles:</strong></p>
+    <p>
+        Below, you find a table with five different choices. Each choice represents a gamble with two alternatives, Event A and Event B. Both choices occur with the same probability of 50%. Select the one gamble out of the five presented below that you would prefer to take.
+    </p>
+    <p><b>Please choose one of the five gambles:</b></p>
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Choose</th>
-                <th>Gamble</th>
+                <th>Choice</th>
                 <th>Event A</th>
                 <th>Event B</th>
                 <th>Probability A</th>
@@ -24,7 +25,6 @@
                 <td>
                     <input type="radio" name="risk_choice" value="{{ gamble.value }}" required>
                 </td>
-                <td>{{ gamble.value }}</td>
                 <td>{{ gamble.event_a }} €</td>
                 <td>{{ gamble.event_b }} €</td>
                 <td>50%</td>

@@ -1,15 +1,15 @@
 from otree.api import Currency as c, currency_range, expect, Bot
 from . import *
+from savings_game_config import TEST_PURCHASE_PLAN, TEST_FINAL_CASH_AMOUNTS
 
-PURCHASE_PLAN = [
-    {'food_purchase': 1, 'risky_investment': c(5)}
-    for _ in range(12)
-]
 
 class PlayerBot(Bot):
     def play_round(self):
         if self.round_number < C.NUM_ROUNDS:
-            yield Savings, PURCHASE_PLAN[self.round_number - 1]
+            assert self.player.cash == TEST_FINAL_CASH_AMOUNTS[self.player.inflation_regime][self.round_number - 1]
+        
+        if self.round_number < C.NUM_ROUNDS:
+            yield Savings, TEST_PURCHASE_PLAN[self.round_number - 1]
         if self.round_number == 6:
             yield FoodPriceEstimate6, {
                 'food_price_estimate_6': 10
@@ -21,3 +21,4 @@ class PlayerBot(Bot):
         if self.round_number == C.NUM_ROUNDS:
             yield Results
         
+    

@@ -1,5 +1,5 @@
-from otree.api import Currency as c, currency_range, expect, Bot
 from . import *
+from time import sleep
 
 
 class PlayerBot(Bot):
@@ -10,4 +10,3 @@ class PlayerBot(Bot):
         yield Page4, {'compound_q1': '1100', 'compound_q2': 'more_2000', 'compound_q3': 'more_1150', 'compound_q4': '32000'}
         yield Page5, {'age': 35, 'gender': 'male', 'education': 'master', 'investment_experience': 'very_exp'}
         yield Submission(Summary, check_html=False)
-        

@@ -129,7 +129,7 @@ class Savings(Page):
         asset_realization, asset_payoff = get_asset_payment(player)
         asset_payment = cu(asset_payoff)
         salary = player.initial_salary
-        new_cash = unspent_cash + salary + interest_payment + asset_payment + asset_expense
+        new_cash = unspent_cash + salary + interest_payment + asset_payment
         
         # new food price
         new_food_price = food_price * (1 + player.inflation_rate)
@@ -211,19 +211,14 @@ class Results(Page):
             
         # set payoff if paid for real
         part = player.participant
+        part.vars["game_payoff"] = final_cash
         if part.vars.get('pay_for_real', False) and part.vars.get('pay_round', None) == C.GAME_ROUND:
-            player.payoff = final_cash
+            player.payoff = final_cash * player.session.config['real_world_currency_per_point']
+            
             
         return {
-            'total_interest_payments': total_interest_payments,
-            'total_asset_payments': total_asset_payments,
-            'total_salaries': total_salaries,
-            'total_food_expense': total_food_expense,
-            'leftover_food': leftover_food,
-            'final_cash': final_cash,
+            'game_round': C.GAME_ROUND,
             'player_dead': player_in_final_round.dead,
-            'player_death_round': player_in_final_round.field_maybe_none('death_round'),
-            'player_death_reason': player_in_final_round.field_maybe_none('death_reason'),
         }
 
 

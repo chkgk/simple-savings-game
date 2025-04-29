@@ -5,14 +5,7 @@
 
 <p>Please answer the following demographic questions:</p>
 
-{% for field in form %}
-    <div class="form-group mb-3">
-        <label class="form-label" style="font-weight: 600; font-size: 1.05rem;">
-            {{ field.label }}
-        </label>
-        {{ field }}
-    </div>
-{% endfor %}
+{{ formfields }}
 
 {{ next_button }}
 

@@ -5,17 +5,19 @@
 {% endblock %}
 
 {% block content %}
-<p>The following questions cover the compound interest effect. For Questions 1 and 4, manually type a number in the respective field. Questions 2 and 3 are single choice.</p>
-<p>Each correct answer contributes X € to your remuneration.</p>
-
-<hr>
-
-<div><strong>Question 1:</strong> {{ formfield 'compound_q1' }}</div>
-<div><strong>Question 2:</strong> {{ formfield 'compound_q2' }}</div>
-<div><strong>Question 3:</strong> {{ formfield 'compound_q3' }}</div>
-<div><strong>Question 4:</strong> {{ formfield 'compound_q4' }}</div>
-
-{{ next_button }}
+    <p>
+        The following questions cover the compound interest effect. For questions 1 and 4, you have to manually type a number in the respective field. Questions 2 and 3 are single-choice questions with three options, where exactly one is correct.
+    </p>
+    <p>Each correct answer contributes X € to your remuneration.</p>
+    
+    <hr>
+    
+    <div><b>Question 1:</b> {{ formfield 'compound_q1' }}</div>
+    <div><b>Question 2:</b> {{ formfield 'compound_q2' }}</div>
+    <div><b>Question 3:</b> {{ formfield 'compound_q3' }}</div>
+    <div><b>Question 4:</b> {{ formfield 'compound_q4' }}</div>
+    
+    {{ next_button }}
 {% endblock %}
 
 

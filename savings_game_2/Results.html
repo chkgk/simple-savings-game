@@ -4,17 +4,23 @@
 
 {{ block content }}
     <p>
-        Final cash: {{ final_cash }} <br>
-        Leftover food: {{ leftover_food }} <br>
-        Total salaries: {{ total_salaries }} <br>
-        Total interest payments: {{ total_interest_payments }} <br>
-        Total asset payments: {{ total_asset_payments }}<br>
-        Total food expense: {{ total_food_expense }}<br>
-        Player died / game ended early: {{ player_dead }}<br>
-        Player death round: {{ player_death_round }}<br>
-        Player death reason: {{ player_death_reason }}
+        {% if game_round == 1 %} 
+            You have now completed the first round of the Savings Game.
+        {% else %}
+            You have now completed the second round of the Savings Game.
+        {% endif %}
+        
+        {% if player_dead %}
+            <br>
+            The round ended prematurely because you ran out of food and did not have enough cash to purchase any further units.
+        {% endif %}
+    </p>
+    <p>
+        {% if game_round == 1 %} 
+            For the next round, you will start with a new endowment of $30. The initial price of food has reset.
+        {% else %}
+            Please fill in the questionnaires on the next pages. All payments you encounter in the next part are hypothetical.
+        {% endif %}
     </p>
     {{ next_button }}
 {{ endblock }}
-
-
