@@ -7,21 +7,21 @@
     <div class="card-body">
         <div class="row">
             <div class="col-4">
-                <h4>Portfolio</h4>
+                <h4>Reserves</h4>
                 <b>Food: <span id="food">{{ food }}</span></b><br>
-                Cash: <span id="cash">{{ cash }}</span>
+                Cash: $<span id="cash">{{ cash|to2 }}</span>
             </div>
             <div class="col-4">
                 <h4>Salary & Prices</h4>
-                <b>Food price: <span id="food_price">{{ food_price }}</span></b><br>
-                Salary income: <span id="salary">{{ salary }}</span><br>
+                <b>Food Price: $<span id="food_price">{{ food_price|to2 }}</span></b><br>
+                Salary Income: $<span id="salary">{{ salary|to2 }}</span><br>
 
             </div>
             <div class="col-4">
                 <h4>History</h4>
-                Interest payment: <span id="interest">{{ player.interest_payment }} </span><br>
-                Asset payment: <span id="return">{{ player.asset_payment }}</span><br>
-                Realized Asset Payoff: <span id="realized_payoff">{{ realized_asset_payoff|to2 }}</span>
+                Interest Payment: $<span id="interest">{{ player.interest_payment|to2 }} </span><br>
+                Asset Payment: $<span id="return">{{ player.asset_payment|to2 }}</span><br>
+                Realized Asset Payoff: <span id="realized_payoff">{{ realized_asset_payoff }}</span>
             </div>
         </div>
     </div>
@@ -39,17 +39,17 @@
                     <span class="input-group-text" id="basic-addon1">units</span>
                 </div>
     
-                <label for="id_risky_investment" class="form-label">How many units of food do you want to buy?</label>
+                <label for="id_risky_investment" class="form-label">How much do you want to invest in the asset?</label>
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon2">$</span>
-                    <input type="number" min="0" step="0.01" class="form-control" placeholder="1.23 " aria-label="investment" aria-describedby="basic-addon2" name="risky_investment" id="id_risky_investment">
+                    <input type="number" min="0" step="0.01" class="form-control" placeholder="1.23" aria-label="investment" aria-describedby="basic-addon2" name="risky_investment" id="id_risky_investment">
                 </div>
             </div>
             <div class="col-4">
                 <h4>Expenses</h4>
-                Food expense: <span id="food_expense"></span><br>
-                Asset investment: <span id="asset_expense"></span><br>
-                <p><b>Total expenses: <span id="total_expense"></span></b></p>
+                Food Expense: <span id="food_expense"></span><br>
+                Asset Investment: <span id="asset_expense"></span><br>
+                <p><b>Total Expenses: <span id="total_expense"></span></b></p>
                 {{ next_button }}
             </div>
         </div>
@@ -60,7 +60,7 @@
 <div class="card mb-3">
     <div class="card-body">
         <h4>General Information</h4>
-        Savings account interest rate: <span id="interest_rate">{{ interest_rate }}%</span><br>
+        Cash Interest Rate: <span id="interest_rate">{{ interest_rate }}%</span><br>
         Asset Payoff 1 (50% chance): $1.60<br>
         Asset Payoff 2 (50% chance): $0.75
     </div>

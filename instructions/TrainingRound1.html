@@ -1,11 +1,11 @@
 {{ block title }}
-Month {{ player.round_number }} of {{ max_rounds }}
+    Month {{ player.round_number }} of {{ max_rounds }}
 {{ endblock }}
 
 {{ block content }}
 <p>
     Below is an example of the primary screen you will see and interact with during the Simple Savings Game. In the
-    upper part of the game screen, you see important data under the sections “Reserves”, “Salary & Prices”, “Asset Information”, and "General Information".
+    upper part of the game screen, you see important data under the sections “Reserves”, “Salary & Prices”, “History”, and "General Information".
     In the middle part under “Decision”, you must make your consumption and investment decisions. If you are familiar
     with the game screen, please complete the Training Task.
 </p>
@@ -19,19 +19,19 @@ Month {{ player.round_number }} of {{ max_rounds }}
         <div class="row">
             <div class="col-4">
                 <h4>Reserves</h4>
-                Food: <span id="food">{{ food }}</span><br>
+                <b>Food: <span id="food">{{ food }}</span></b><br>
                 Cash: <span id="cash">${{ cash }}</span><br>
             </div>
             <div class="col-4">
                 <h4>Salary & Prices</h4>
-                Food Price: <span id="food_price">${{ food_price }}</span><br>
+                <b>Food Price: <span id="food_price">${{ food_price }}</span></b><br>
                 Salary Income: <span id="salary">${{ salary }}</span>
             </div>
             <div class="col-4">
-                <h4>Asset Information</h4>
+                <h4>History</h4>
                 Interest Payment: <span id="interest">${{ interest_payment }}</span><br>
-                Total Asset Payment: <span id="return">${{ asset_payment }}</span><br>
-                Realized Asset Pay-Off:
+                Asset Payment: <span id="return">${{ asset_payment }}</span><br>
+                Realized Asset Payoff:
                 <span id="realized_payoff">
                     {% if realized_asset_payoff %}
                         {{ realized_asset_payoff }}
@@ -51,24 +51,22 @@ Month {{ player.round_number }} of {{ max_rounds }}
             <div class="col-8">
                 <label for="id_food_purchase" class="form-label">How many units of Food do you want to buy?</label>
                 <div class="input-group mb-3">
-                    <input type="number" min="0" step="1" class="form-control" name="food_purchase"
-                           id="id_food_purchase">
+                    <input type="number" min="0" step="1" class="form-control" name="food_purchase" id="id_food_purchase" placeholder="1, 2, 3...">
                     <span class="input-group-text">units</span>
                 </div>
 
-                <label for="id_risky_investment" class="form-label">How many units of the Asset do you want to
-                    buy?</label>
+                <label for="id_risky_investment" class="form-label">How much do you want to invest in the asset?</label>
                 <div class="input-group mb-3">
                     <span class="input-group-text">$</span>
-                    <input type="number" min="0" step="0.01" class="form-control" name="risky_investment"
+                    <input type="number" min="0" step="0.01" class="form-control" name="risky_investment" placeholder="1.23"
                            id="id_risky_investment">
                 </div>
             </div>
             <div class="col-4">
                 <h4>Expenses</h4>
-                Food expense: <span id="food_expense">-</span><br>
-                Asset investment: <span id="asset_expense">-</span><br>
-                <p><b>Total expenses: <span id="total_expense">-</span></b></p>
+                Food Expense: <span id="food_expense">-</span><br>
+                Asset Investment: <span id="asset_expense">-</span><br>
+                <p><b>Total Expenses: <span id="total_expense">-</span></b></p>
                 <button class="otree-btn-next btn btn-primary">Confirm</button>
             </div>
         </div>
@@ -80,8 +78,8 @@ Month {{ player.round_number }} of {{ max_rounds }}
     <div class="card-body">
         <h4>General Information</h4>
         Cash Interest Rate: <span id="interest_rate">{{ interest_rate }}%</span><br>
-        Asset Pay-Off 1 (50%): 1.60<br>
-        Asset Pay-Off 2 (50%): 0.75<br>
+        Asset Payoff 1 (50% chance): 1.60<br>
+        Asset Payoff 2 (50% chance): 0.75<br>
     </div>
 </div>
 

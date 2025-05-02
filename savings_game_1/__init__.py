@@ -24,28 +24,28 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
     food_purchase = models.IntegerField()
-    risky_investment = models.CurrencyField()
+    risky_investment = models.FloatField()
     
     dead = models.BooleanField(default=False)
     death_round = models.IntegerField()
     death_reason = models.StringField()
     
-    cash = models.CurrencyField()
+    cash = models.FloatField()
     food = models.IntegerField()
     
-    salary = models.CurrencyField(default=0)
-    food_expense = models.CurrencyField(default=0)
-    interest_payment = models.CurrencyField(default=0)
-    asset_payment = models.CurrencyField(default=0)
+    salary = models.FloatField(default=0)
+    food_expense = models.FloatField(default=0)
+    interest_payment = models.FloatField(default=0)
+    asset_payment = models.FloatField(default=0)
     realized_asset_payoff = models.FloatField(blank=True)
 
-    food_price_estimate_6 = models.StringField(label="Estimation (after 6 months)")
-    food_price_estimate_12 = models.StringField(label="Estimation (after 12 months)")
+    food_price_estimate_6 = models.FloatField(label="How much do you think the price of Food changed during the previous 6 months in percentage terms?")
+    food_price_estimate_12 = models.FloatField(label="How much do you think the price of Food changed during the previous 6 months in percentage terms?")
     
-    initial_cash = models.CurrencyField()
+    initial_cash = models.FloatField()
     initial_food = models.IntegerField()
-    initial_salary = models.CurrencyField()
-    initial_food_price = models.CurrencyField()
+    initial_salary = models.FloatField()
+    initial_food_price = models.FloatField()
     savings_interest_rate = models.FloatField()
     asset_expected_return = models.FloatField()
     asset_standard_deviation = models.FloatField()
@@ -87,14 +87,19 @@ def get_food_price(player):
     return player.initial_food_price * (1 + player.inflation_rate) ** (player.round_number - 1)
 
 def js_and_template_vars(player):
+    rap = player.field_maybe_none('realized_asset_payoff')
+    if rap is None or player.asset_payment == 0:
+        realized_asset_payoff = '-'
+    else:
+        realized_asset_payoff = f"${rap:.2f}"
     return {
-        'food_price': cu(get_food_price(player)),
+        'food_price': get_food_price(player),
         'cash': player.cash,
         'food': player.food,
-        'salary': cu(player.initial_salary),
+        'salary': player.initial_salary,
         'interest_rate': player.savings_interest_rate * 100,
         'max_rounds': C.NUM_ROUNDS - 1,
-        'realized_asset_payoff': player.field_maybe_none("realized_asset_payoff") or '-',
+        'realized_asset_payoff': realized_asset_payoff,
     }
 
 
@@ -107,6 +112,7 @@ def get_asset_payment(player):
 class Savings(Page):
     form_model = 'player'
     form_fields = ['food_purchase', 'risky_investment']
+    template_name = 'savings_game_common/Savings.html'
     
     def is_displayed(player):
         # do not play the last round, just use if for calculations
@@ -125,9 +131,9 @@ class Savings(Page):
         new_food = player.food - 1 + player.food_purchase
         
         # calculate new cash
-        interest_payment = cu(unspent_cash * player.savings_interest_rate)
+        interest_payment = unspent_cash * player.savings_interest_rate
         asset_realization, asset_payoff = get_asset_payment(player)
-        asset_payment = cu(asset_payoff)
+        asset_payment = asset_payoff
         salary = player.initial_salary
         new_cash = unspent_cash + salary + interest_payment + asset_payment
         
@@ -170,6 +176,8 @@ class Savings(Page):
 class FoodPriceEstimate6(Page):
     form_model = 'player'
     form_fields = ['food_price_estimate_6']
+    template_name = 'savings_game_common/FoodPriceEstimate6.html'
+
 
     def is_displayed(player):
         return player.round_number == 6
@@ -177,12 +185,16 @@ class FoodPriceEstimate6(Page):
 class FoodPriceEstimate12(Page):
     form_model = 'player'
     form_fields = ['food_price_estimate_12']
+    template_name = 'savings_game_common/FoodPriceEstimate12.html'
+
 
     def is_displayed(player):
         return player.round_number == 12
 
 
 class Results(Page):
+    template_name = 'savings_game_common/Results.html'
+
     def is_displayed(self):
         return self.round_number == C.NUM_ROUNDS
     
@@ -220,6 +232,7 @@ class Results(Page):
         return {
             'game_round': C.GAME_ROUND,
             'player_dead': player_in_final_round.dead,
+            'final_cash': final_cash,
         }
 
 

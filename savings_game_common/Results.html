@@ -16,6 +16,9 @@
         {% endif %}
     </p>
     <p>
+        Your final amount of cash was ${{ final_cash|to2 }}.
+    </p>
+    <p>
         {% if game_round == 1 %} 
             For the next round, you will start with a new endowment of $30. The initial price of food has reset.
         {% else %}

@@ -137,7 +137,7 @@ class TrainingRound1(Page):
 
     def error_message(player, values):
         if values['food_purchase'] != 3 or values['risky_investment'] != cu(5):
-            return "Please buy exactly 3 units of food and invest exactly 5 $."
+            return "Please buy exactly 3 units of food and invest exactly $5."
         return None
 
     @staticmethod
