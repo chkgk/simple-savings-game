@@ -9,14 +9,8 @@ SESSION_CONFIGS = [
         inflation_regime='training',
     ),
     dict(
-        display_name='Savings game, 12 months, low inflation',
-        name='savings_game_low',
-        app_sequence=['savings_game_1'],
-        num_demo_participants=2,
-    ),
-    dict(
-        display_name='Savings game, 12 months, high inflation',
-        name='savings_game_high',
+        display_name='Savings game, 12 months, random inflation',
+        name='savings_game',
         app_sequence=['savings_game_1'],
         num_demo_participants=2,
     ),
@@ -31,7 +25,6 @@ SESSION_CONFIGS = [
         display_name="Complete Experiment",
         app_sequence=['instructions', 'savings_game_1', 'savings_game_2', 'post_survey'],
         num_demo_participants=1,
-        inflation_regime='high'
     ),
 ]
 
