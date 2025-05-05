@@ -56,7 +56,7 @@ class Player(BasePlayer):
 def get_regime(player):
     treatment = player.participant.vars.get('treatment', None)
     if treatment is None:
-        treatment = random.choice(["high-high", "high-low", "low-high", "low-low"])
+        treatment = random.choice(["high-low", "low-high", "low-low"])
         player.participant.vars["treatment"] = treatment
 
     pay_round = player.participant.vars.get('pay_round', None)
@@ -219,7 +219,7 @@ class Results(Page):
         part = player.participant
         part.vars["game_payoff"] = final_cash
         if part.vars.get('pay_for_real', False) and part.vars.get('pay_round', None) == C.GAME_ROUND:
-            player.payoff = final_cash * player.session.config['real_world_currency_per_point']
+            player.payoff = final_cash * player.session.config['real_world_currency_per_point'] + cu(4.00)
             
             
         return {

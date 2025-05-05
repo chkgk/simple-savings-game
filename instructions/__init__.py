@@ -28,26 +28,26 @@ class Player(BasePlayer):
         widget=widgets.RadioSelect,
     )
     cash_balance_question = models.IntegerField(
-        label="Suppose you had $100 in cash last month. If you earn $10 in interest, receive $20 in monthly salary, get $40 in Total Asset Payment, and spend $30 on food, what will your cash be before continuing to the next month?",
+        label="Suppose you had $100 in cash last month. If you earn $10 in interest, receive $20 in monthly salary, get $40 in total asset payment, and spend $30 on food, what will your cash be before continuing to the next month?",
         choices=[(100, '$100'), (170, '$170'), (200, '$200'), (140, '$140')],
         widget=widgets.RadioSelect,
     )
     interest_rate_change_question = models.StringField(
-        label="Can the Interest Rate change during the game?",
+        label="Can the interest rate change during the game?",
         choices=[
             ('yes', 'Yes'),
             ('no', 'No'),
-            ('depends_cash', 'It depends how much Cash you have'),
-            ('depends_total', 'It depends how much is in Total Cash'),
+            ('depends_cash', 'It depends how much cash you have'),
+            ('depends_total', 'It depends how much is in total cash'),
         ],
         widget=widgets.RadioSelect,
     )
     food_price_change_question = models.StringField(
-        label="Can the price of Food change?",
+        label="Can the price of food change?",
         choices=[
             ('never_decrease', 'It can never decrease'),
             ('never_increase', 'It can never increase'),
-            ('can_both', 'It can increase and decrease.'),
+            ('can_both', 'It can increase and decrease'),
             ('cannot_change', 'It cannot change'),
         ],
         widget=widgets.RadioSelect,
@@ -56,7 +56,7 @@ class Player(BasePlayer):
         label="The final value of which of these balances determines your performance-based remuneration for the game?",
         choices=[
             ('investment', 'Asset investment'),
-            ('food', 'Food Reserves'),
+            ('food', 'Food reserves'),
             ('cash', 'Cash'),
             ('interest', 'Interest earned'),
         ],
@@ -77,22 +77,22 @@ def creating_session(subsession):
 
 def food_reserve_question_error_message(player, value):
     if value != 1:
-        return "Please review the instructions carefully: You must consume exactly 1 unit of Food each month."
+        return "Please review the instructions carefully: You must consume exactly 1 unit of food each month."
     return None
 
 def cash_interest_question_error_message(player, value):
     if value != 80:
-        return "Please review the instructions carefully: Only the uninvested Cash earns 1.9% interest."
+        return "Please review the instructions carefully: Only the uninvested cash earns 1.9% interest."
     return None
 
 def cash_balance_question_error_message(player, value):
     if value != 140:
-        return "Please review the instructions: Your Cash is increased by income (interest, salary, asset payment) and reduced by expenses (food and investment costs)."
+        return "Please review the instructions: Your cash is increased by income (interest, salary, asset payment) and reduced by expenses (food and investment costs)."
     return None
 
 def interest_rate_change_question_error_message(player, value):
     if value != "no":
-        return "Remember: The Interest Rate stays constant throughout the entire game."
+        return "Remember: The interest rate stays constant throughout the entire game."
     return None
 
 def food_price_change_question_error_message(player, value):
@@ -102,7 +102,7 @@ def food_price_change_question_error_message(player, value):
 
 def remuneration_question_error_message(player, value):
     if value != "cash":
-        return "Careful: Only your final Cash balance determines your study earnings."
+        return "Careful: Only your final cash balance determines your study earnings."
     return None
 
 
@@ -181,7 +181,7 @@ class TrainingRound2(Page):
     def vars_for_template(player):
         return {
             'training': True,
-            'task': 'Now buy 2 units of food and invest $5 so that food expenses are $8.40 and Total expenses are $13.40.',
+            'task': 'Now buy 2 units of food and invest $5 so that food expenses are $8.40 and total expenses are $13.40.',
             'cash': "28.64",
             'food': "2",
             'salary': "8.00",
