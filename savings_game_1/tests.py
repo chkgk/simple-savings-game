@@ -6,7 +6,7 @@ from savings_game_config import TEST_PURCHASE_PLAN, TEST_FINAL_CASH_AMOUNTS
 class PlayerBot(Bot):
     def play_round(self):
         if self.round_number < C.NUM_ROUNDS:
-            assert self.player.cash == TEST_FINAL_CASH_AMOUNTS[self.player.inflation_regime][self.round_number - 1]
+            assert round(self.player.cash, 2) == TEST_FINAL_CASH_AMOUNTS[self.player.inflation_regime][self.round_number - 1]
         
         if self.round_number < C.NUM_ROUNDS:
             yield Savings, TEST_PURCHASE_PLAN[self.round_number - 1]

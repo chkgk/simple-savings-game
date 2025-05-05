@@ -4,6 +4,7 @@ from . import *
 
 class PlayerBot(Bot):
     def play_round(self):
+        yield Introduction
         yield Instructions1
         yield Instructions2, {'food_reserve_question': 1}
         yield Instructions3, {'cash_interest_question': 80}
