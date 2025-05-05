@@ -107,6 +107,9 @@ def remuneration_question_error_message(player, value):
 
 
 # Pages
+class Introduction(Page):
+    pass
+
 class Instructions1(Page):
     pass
 
@@ -216,6 +219,7 @@ class Instructions8(Page):
 
 
 page_sequence = [
+    Introduction,
     Instructions1,
     Instructions2,
     Instructions3,
