@@ -5,9 +5,8 @@
 
     <p>Thank you for participating in this experiment.</p>
 
-    <p>Round {{ payment_round }} has been selected at random. In this round, you earned ${{ game_payment|to2 }}.</p>
-
     {% if pay_for_real %}
+        <p>Round {{ payment_round }} has been selected at random. In this round, you earned ${{ game_payment|to2 }}.</p>
         <p>Together with your base payment, this translates into {{ final_pay_euro }}.</p>
         <p>You have been selected for payment. Please click the button below to enter your payment details. You will be redirected to a different page so that your payment information is stored separately from your decisions. We do not track your personal information back to your decisions.</p>
         <a class="btn btn-primary" href="{{ payment_url }}{{ participant.code }}" >Enter Payment Details</a>
