@@ -224,8 +224,8 @@ class Results(Page):
             
         # set payoff if paid for real
         part = player.participant
-        part.vars["game_payoff"] = final_cash
         if part.vars.get('pay_for_real', False) and part.vars.get('pay_round', None) == C.GAME_ROUND:
+            part.vars["game_payoff"] = final_cash
             player.payoff = final_cash * player.session.config['real_world_currency_per_point'] + cu(4.00)
             
             
